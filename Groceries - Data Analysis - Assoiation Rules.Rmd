@@ -1,0 +1,121 @@
+---
+title: "Groceries Dataset Analysis"
+Author: Nandini Ethirajulu
+date: "2024-06-12"
+output:
+  word_document: default
+  html_document: default
+---
+
+
+```{r}
+#Considering the “groceries” dataset as source data.   
+
+
+
+###Installing arules (association rules) package 
+#install.packages("arules")
+library("arules")
+
+##Setting the directory for the source data
+setwd("C:/Users/nandi/Documents/Personal/Academics/Projects/Groceries - Association Rules") 
+
+
+##Analysing the transactions 
+groceries_dats <- read.transactions("groceries.csv", sep = ",")
+
+
+summary(groceries_dats)
+
+
+########### (A) Visualizing the item frequency plot for the top 40 grocery items. ###########
+
+##using itemFrequencyPlot to fetch the frequency plot of groceries dataset (only top 40 items)
+
+
+itemFrequencyPlot(groceries_dats, topN = 40, xlab = "Grocery Items Top 40" , ylab =  "Item Frequency", cex.names=0.59)
+
+jpeg(filename = "results/item_frequency_plot.jpg", width = 800, height = 600)
+
+# Generate and save groceries_dats frequency plot for the top 40 items
+itemFrequencyPlot(groceries_dats, topN = 40, xlab = "Grocery Items Top 40", ylab = "Item Frequency", cex.names = 0.59)
+
+```
+
+
+
+```{r}
+
+########### (B) Ranking the top five association rules with the highest “confidence”. ###########
+
+# Generating association rules
+#?apriori --help file
+
+##Using apriori algorithm to fetch the top five rules based on confidence
+
+rule_params <- list(support = .005, confidence = .01, minlen = 2, maxlen = 6)
+groceries_arules <- apriori(groceries_dats, parameter = rule_params)
+
+##top five rules with the highest “confidence” is given below
+inspect(sort(groceries_arules, by = "confidence")[1:5])
+```
+
+```{r}
+
+########### (C) Ranking the top ten association rules with the highest “lift”. ###########
+
+
+##Using apriori algorithm to fetch the top ten rules based on lift
+
+
+inspect(sort(groceries_arules, by = "lift")[1:10])
+```
+
+
+```{r}
+
+
+
+########### (D) consistency and differences between top rules based on highest “confidence” and highest “lift”. ###########
+
+
+## Anaslysing the output ranks of B (rules based on confidence sorting), we understand that different combinational items that are associated with whole milk have the highest confidence values. All the top five rules  have whole milk in the RHS. More specifically, there is 70% chance of  purchasing whole milk  whenever(root vegetables, tropical fruit, yogurt) items are bought together.
+
+## Analysing the output ranks of C (top rules based on lift sorting)-- we understand that  likelihood of purchasing white bread is about 4.64 times increased when ham is purchased. Vice versa, the second rule indicates association/likelihood of purchasing ham is higher whenever white bread is purchased
+
+
+#Consistently both the rankings indicates in common that, whole milk, white bread, root vegetables are regularly associated with other vegetables, ham and Whipped/Sour Cream.
+
+#Differences - We see that Citrus fruits and Berries are repeated in the top 10 rankings based on lift sorting. However, it has not been picked up in the top 5 ranks of confidence.
+
+```
+
+```{r}
+########### (E) Recommendations to increase their pastry sales ###########  
+
+
+groceries_pastry_rules_e = subset(groceries_arules, rhs %in% "pastry")
+#groceries_pastry_rules_e
+
+groceries_pastry_rules_e_sort = sort(groceries_pastry_rules_e, by = "lift")
+inspect(groceries_pastry_rules_e_sort[1:10])
+
+
+#Rules are filtered specifically for pastries, and sorted based on the lift values
+
+### Recommendations to increase pastry sales --
+
+## From the top ranked rules, we see that purchase of soda and whole milk has a chance of increasing the pastry sales (lift value is greater than 1 indicating the high association of these items )
+
+##Sausage, pip fruit, rolls/buns, yogurt are some of the items that increase the pastry sales whenever they are bought together with whole milk.
+
+##In addition,  waffles whenever they are bought alone by the customers have also promoted the sales of pastries.
+
+##In conclusion, in order to increase the pastry sales, it is recommended to promote or bundle or organize the above suggested products together in the store to increase the sales of the pastries
+
+
+##Printing the complete Pastry sales association rules
+inspect(groceries_pastry_rules_e_sort)
+
+```
+
