@@ -2,9 +2,13 @@
 
 
 **Overview**
+
 This project contains an analysis of transactional data from a grocery store, focusing on uncovering associations between different grocery items. The main techniques employed include item frequency visualization, association rule mining, and recommendations for increasing pastry sales.
 
+
+
 **Analysis**
+
 A) Item Frequency Plot
 The item frequency plot visualizes the top 40 grocery items based on their frequency of occurrence in the dataset.
 
