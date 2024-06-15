@@ -23,3 +23,7 @@ While both confidence and lift metrics help in identifying strong association ru
 
 E) Recommendations for Increasing Pastry Sales
 Based on the analysis, specific item bundles can be developed to enhance pastry sales. Recommendations include bundling pastries with frequently associated items such as coffee, tea, or fresh fruits, identified from the high-confidence and high-lift rules.
+
+Coding Process
+
+The project was implemented in the R programming language, leveraging several packages for data manipulation, visualization, and association rule mining.
